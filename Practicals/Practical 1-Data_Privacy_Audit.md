@@ -5,8 +5,8 @@
 ### Website Selected
 
 #### Organization: GeeksforGeeks
-#### Website: GeeksforGeeks⁠�
-#### Privacy Policy: GFG Privacy Policy⁠�
+#### Website: GeeksforGeeks⁠
+#### Privacy Policy: GFG Privacy Policy⁠
 
 ### Requirements
 
@@ -35,34 +35,16 @@ GeeksforGeeks account (optional)
 • Suggest measures to improve privacy.
 
 ### Observations:-
+| Privacy Aspect       | Observation                                                                                         | Risk   |
+| -------------------- | --------------------------------------------------------------------------------------------------- | ------ |
+| Data Collection      | Name, email, phone number, IP address and usage data may be collected.                              | Medium |
+| Data Usage           | Data is used to provide, improve and personalize services.                                          | Low    |
+| Cookies              | Cookies and tracking technologies are used for functionality, analytics and advertising.            | Medium |
+| Third-party Services | Data may be shared with service providers and other third parties.                                  | Medium |
+| Profile Visibility   | User profiles and some activities may be visible to other users.                                    | Medium |
+| Security             | Reasonable measures are used to protect personal data.                                              | Low    |
+| Data Deletion        | Personal data is stated to be deleted within 15 days after account deletion, subject to exceptions. | Low    |
 
-#### Data Collection-
-Name, email, phone number, IP address and usage data may be collected.
-##### risk - Medium
-
-#### Data Usage-
-Data is used to provide, improve and personalize services.
-##### risk -Low
-
-#### Cookies
-Cookies and tracking technologies are used for functionality, analytics and advertising.
-##### risk -Medium
-
-#### Third-party Services
-Data may be shared with service providers and other third parties.
-##### risk -Medium
-
-#### Profile Visibility
-User profiles and some activities may be visible to other users.
-##### risk -Medium
-
-#### Security
-Reasonable measures are used to protect personal data.
-##### risk -Low
-
-#### Data Deletion
-Personal data is stated to be deleted within 15 days after account deletion, subject to exceptions.
-##### risk -Low
 
 
 These observations are based on GFG's published Privacy Policy. 
@@ -90,11 +72,6 @@ The Data Privacy Audit of GeeksforGeeks was successfully performed. The audit id
 
 ### Conclusion
 GeeksforGeeks provides a Privacy Policy and several measures for protecting user data. However, users should remain careful about public information, cookies, third-party services and the information they provide on the platform.
-
-
-
-
-
 
 
 
