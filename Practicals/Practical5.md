@@ -56,6 +56,21 @@ Pseudonymization replaces private identifiers with fake identifiers or pseudonym
 
 This technique modifies the original data slightly by adding random statistical noise. The overall statistical trends in the dataset remain the same, but individual records are altered.
 
+- The technique operates through several key mechanisms:
+
+#### • Noise Addition: 
+Random values (e.g., from a Laplace or Gaussian distribution) are added to numerical data, allowing aggregate statistics like means and correlations to remain valid while obscuring specific records. 
+
+#### • Data Swapping:
+Values are exchanged between records (e.g., swapping salaries between two employees) to break the link between an individual and their sensitive attribute without altering the data’s distribution. 
+
+#### • Rounding and Binning:
+Numerical data is rounded to a certain precision or grouped into bins to reduce granularity and prevent re-identification. 
+
+#### • Synthetic Data Generation: 
+New data points are generated based on the statistical properties of the original dataset, creating a safe alternative for training models or public release. 
+
+
 - **Example:** Altering a user's exact login timestamp by +/- 15 minutes.
 - **Use Case:** Machine learning model training and the publication of census data.
 
