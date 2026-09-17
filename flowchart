@@ -1,0 +1,117 @@
+DATA PRIVACY
+│
+├── 1. Confidentiality
+│      │
+│      ├── Encryption
+│      │      │
+│      │      ├── Symmetric Encryption
+│      │      │      ├── AES-128
+│      │      │      ├── AES-192
+│      │      │      ├── AES-256
+│      │      │      ├── 3DES
+│      │      │      ├── ChaCha20
+│      │      │      ├── Database Encryption
+│      │      │      ├── File Encryption
+│      │      │      ├── Disk Encryption
+│      │      │      ├── Secure Key Storage
+│      │      │      ├── Key Rotation
+│      │      │      └── Key Distribution Challenge
+│      │      │
+│      │      ├── Asymmetric Encryption
+│      │      │      ├── RSA
+│      │      │      ├── ECC
+│      │      │      ├── EdDSA
+│      │      │      ├── Public Key
+│      │      │      ├── Private Key
+│      │      │      ├── PKI
+│      │      │      ├── Certificate Authorities
+│      │      │      ├── Digital Signatures
+│      │      │      ├── SSL/TLS
+│      │      │      └── Non-Repudiation
+│      │      │
+│      │      └── Advanced Encryption
+│      │             ├── Homomorphic Encryption
+│      │             ├── Searchable Encryption
+│      │             ├── Format-Preserving Encryption
+│      │             ├── End-to-End Encryption
+│      │             └── Transparent Data Encryption (TDE)
+│      │
+│      └── Technical Controls
+│             ├── Encryption at Rest
+│             ├── Encryption in Transit
+│             ├── Access Control
+│             ├── Data Masking
+│             ├── Data Loss Prevention
+│             └── Anonymity
+│
+├── 2. Integrity
+│      │
+│      ├── Cryptographic Hashing
+│      ├── Checksums & CRC
+│      ├── Digital Signatures
+│      └── Applications
+│
+├── 3. Authentication
+│      ├── Passwords
+│      ├── Multi-Factor Authentication
+│      ├── Biometrics
+│      └── Certificates
+│
+├── 4. Authorization
+│      ├── RBAC
+│      ├── ABAC
+│      └── Least Privilege
+│
+├── 5. Privacy Protection
+│      ├── Encryption
+│      ├── Data Masking
+│      ├── Tokenization
+│      ├── Pseudonymization
+│      ├── Anonymization
+│      └── DLP
+│
+└── 6. Anonymity & Privacy-Preserving Techniques
+       │
+       ├── Privacy-Preserving Technologies
+       │      │
+       │      ├── Data Masking
+       │      │      ├── Obfuscate Sensitive Data
+       │      │      ├── Tokenization
+       │      │      ├── Hashing
+       │      │      ├── Encryption
+       │      │      └── Shuffling
+       │      │
+       │      ├── Secure Multi-Party Computation (SMPC)
+       │      │      ├── Collaborative Computation
+       │      │      └── No Raw Data Sharing
+       │      │
+       │      ├── Federated Learning
+       │      │      ├── Distributed Model Training
+       │      │      └── Local Data Remains on Devices
+       │      │
+       │      ├── Privacy-Preserving Record Linkage (PPRL)
+       │      │      ├── Secure Record Matching
+       │      │      └── Identity Protection
+       │      │
+       │      └── Synthetic Data Generation
+       │             ├── Artificial Datasets
+       │             ├── Preserve Statistical Properties
+       │             └── No Real Individuals Exposed
+       │
+       ├── Privacy Models
+       │      ├── k-Anonymity
+       │      ├── l-Diversity
+       │      ├── t-Closeness
+       │      └── Differential Privacy
+       │
+       ├── Identity Protection
+       │      ├── Remove PII
+       │      ├── Metadata Removal
+       │      ├── IP Address Masking
+       │      └── Location Obfuscation
+       │
+       └── Challenges
+              ├── Re-identification Attacks
+              ├── Linkage Attacks
+              ├── Data Utility vs Privacy Trade-off
+              └── Background Knowledge Attacks
