@@ -59,6 +59,9 @@ This technique modifies the original data slightly by adding random statistical 
 - **Example:** Altering a user's exact login timestamp by +/- 15 minutes.
 - **Use Case:** Machine learning model training and the publication of census data.
 
+  <img width="640" height="428" alt="Image" src="https://github.com/user-attachments/assets/6400e715-c717-4b12-b966-363bf42d61a2" />
+  
+
 ## Advanced Privacy Models
 
 To mathematically measure and enforce how well data is anonymized, several models are used:
