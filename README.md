@@ -47,6 +47,7 @@ Which, if A, B, and r match up, should be equal to P. Therefore the coins are To
 
 • You may recognize this math if you’re familiar with the DHM key exchange. This is because the DHM key exchange is exactly what’s happening here: the sender computes a shared secret Ar using the first half of the stealth address (i.e. “A”) and his own private value r, and then combines that shared secret with the second half of the address (i.e. “B”) to create a one-time public address P. If a prospective receiver can use combine his private key a and the public value R to produce the shared secret Ar, the funds are his.
 
+<img width="1080" height="1532" alt="Image" src="https://github.com/user-attachments/assets/375e5f86-22fc-4ae0-b08d-7cc18b33d952" />
 
 ### • Ring Confidential Transactions (RingCT): 
 This feature encrypts the transaction amount using cryptographic commitments and zero-knowledge proofs (like Bulletproofs), allowing the network to verify that inputs equal outputs without revealing the actual value transferred.
