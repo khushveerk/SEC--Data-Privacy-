@@ -6,4 +6,5 @@ ECC uses elliptic curves over finite fields. “Finite field” just means that 
 ## Diffie-Hellman-Merkle Key Exchange
 Diffie-Hellman-Merkle (DHM) key exchange protocol, which enables 2 users to create a shared secret key (for symmetric cryptography) over a public channel. It is what enables stealth addresses, which Monero uses to hide the receivers of transactions.
 
-<img width="399" height="599" alt="Image" src="https://github.com/user-attachments/assets/9a5ae2a4-1539-4f97-a259-964eaef02ac9" />
+<img width="1059" height="1568" alt="Image" src="https://github.com/user-attachments/assets/713598e8-b029-43b1-be96-c7bd4eb36df8" />
+
