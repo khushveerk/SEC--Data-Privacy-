@@ -2,6 +2,8 @@
 
 Privacy is Monero’s “thing,” and to understand Monero it’s very important to understand how it achieves this privacy.
 
+##### Monero actually uses a new-age ECC version of this called Elliptic Curve Diffie-Hellman. so read about that before going forward with how monero actually works 
+
 ### Monero -
 It achieves privacy through a layered cryptographic architecture that obscures the sender, receiver, and transaction amount by default.  Unlike transparent blockchains, Monero’s protocol ensures that all on-chain activity is confidential, making transactions untraceable and ensuring fungibility (where every XMR coin is identical and interchangeable). 
 
@@ -52,4 +54,4 @@ Which, if A, B, and r match up, should be equal to P. Therefore the coins are To
 ### • Ring Confidential Transactions (RingCT): 
 This feature encrypts the transaction amount using cryptographic commitments and zero-knowledge proofs (like Bulletproofs), allowing the network to verify that inputs equal outputs without revealing the actual value transferred.
 
-##### Monero actually uses a new-age ECC version of this called Elliptic Curve Diffie-Hellman. so read about that before going forward with how monero actually works 
+
