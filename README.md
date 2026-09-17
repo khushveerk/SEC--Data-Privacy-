@@ -15,7 +15,7 @@ These mask the sender by grouping their transaction signature with several decoy
 ### • Stealth Addresses: 
 These protect the receiver by generating a unique, one-time public address for every single transaction, preventing external observers from linking payments to a specific wallet or tracking balances. 
 
-#### Stealth Addressing for Unlinkability- 
+  ### Stealth Addressing for Unlinkability- 
 
 To achieve unlinkability––which means to anonymize the receivers of transactions––Monero makes use of stealth addresses. A stealth address will generate a unique address every time it is used so that the actual address of the receiver is hidden. This is achieved by having every account use 2 key pairs rather than one.
 
@@ -27,23 +27,23 @@ To achieve unlinkability––which means to anonymize the receivers of transact
 
 • Then, in order for Todd to retrieve the money associated with one-time public key P, he first uses R (along with his 2 private keys) to generate the associated one-time private key x using the equation x = H(a * R) + b. He then attempts to use this private key to derive the public key P:
 
-##### P = x * G 
+### P = x * G 
 (if this is true, then the funds at P belong to Todd)
 
 Let’s look at the math under the hook here. Substituting x:
 
-##### P = (H(a * R) + b) * G
+### P = (H(a * R) + b) * G
 Distributing G:
 
-#### P = H(a * R)G + bG
+### P = H(a * R)G + bG
 
 Substituting rG for R and B for bG:
 
-#### P = H(a * rG)G + B
+### P = H(a * rG)G + B
 
 An finally, substituting A for aG:
 
-#### P = H(Ar)G + B
+### P = H(Ar)G + B
 
 Which, if A, B, and r match up, should be equal to P. Therefore the coins are Todd’s.
 
