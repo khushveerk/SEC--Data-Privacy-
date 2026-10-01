@@ -1,0 +1,935 @@
+# 🔐 End-to-End Encryption (E2EE)
+
+# Complete Technical Cryptographic Architecture
+
+> A technically detailed architecture showing how two devices establish an encrypted session, derive keys, encrypt/decrypt messages, handle offline recipients, and continuously rotate keys.
+
+---
+
+<img width="1024" height="1536" alt="Image" src="https://github.com/user-attachments/assets/61d8966d-7dc9-48d0-8052-73ea10ba2371" />
+
+
+
+
+# 1. Complete Cryptographic Architecture
+
+```text
+                           ┌──────────────────────────────┐
+                           │         KEY SERVER           │
+                           │                              │
+                           │ Bob's Public Key Bundle      │
+                           │                              │
+                           │ IK_B_pub                     │
+                           │ SPK_B_pub                    │
+                           │ SPK_B_signature              │
+                           │ OPK_B_pub                    │
+                           │                              │
+                           │ ❌ Bob's private keys        │
+                           │ ❌ Session keys              │
+                           │ ❌ Message plaintext         │
+                           └──────────────┬───────────────┘
+                                          │
+                                          │ Public Key Bundle
+                                          ▼
+┌────────────────────────────────────────────────────────────────────┐
+│                           ALICE DEVICE                             │
+│                                                                    │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ Identity Layer                                               │  │
+│  │                                                              │  │
+│  │ Ed25519 Identity Private Key  🔐                             │  │
+│  │ Ed25519 Identity Public Key                                  │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+│                                 │                                  │
+│                                 ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ Session Establishment                                        │  │
+│  │                                                              │  │
+│  │ X25519                                                       │  │
+│  │                                                              │  │
+│  │ Identity Key + Ephemeral Key + Pre-Key Bundle                │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+│                                 │                                  │
+│                                 ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ Shared Secret                                                │  │
+│  │                                                              │  │
+│  │ DH1 || DH2 || DH3 || DH4                                     │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+│                                 │                                  │
+│                                 ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ HKDF                                                         │  │
+│  │                                                              │  │
+│  │ Root Key / Initial Chain Keys                                │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+│                                 │                                  │
+│                                 ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ Double Ratchet                                               │  │
+│  │                                                              │  │
+│  │ Root Key → Chain Key → Message Key                           │  │
+│  │                         ↓                                    │  │
+│  │                    New Message Key                           │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+│                                 │                                  │
+│                                 ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ AEAD                                                         │  │
+│  │                                                              │  │
+│  │ Plaintext + Key + Nonce + AAD                                │  │
+│  │                    ↓                                         │  │
+│  │          Ciphertext + Authentication Tag                     │  │
+│  └──────────────────────────────┬───────────────────────────────┘  │
+└─────────────────────────────────┼──────────────────────────────────┘
+                                  │
+                                  │ 🔒 CIPHERTEXT
+                                  │
+                                  ▼
+                    ┌───────────────────────────┐
+                    │          SERVER           │
+                    │                           │
+                    │ Message Router            │
+                    │ Queue / Temporary Storage │
+                    │                           │
+                    │ 🔒 Ciphertext             │
+                    │ 🔒 Header                 │
+                    │ 🔒 Authentication Tag     │
+                    │                           │
+                    │ ❌ Cannot decrypt         │
+                    └─────────────┬─────────────┘
+                                  │
+                                  │ 🔒 CIPHERTEXT
+                                  ▼
+┌────────────────────────────────────────────────────────────────────┐
+│                            BOB DEVICE                              │
+│                                                                    │
+│  Receive encrypted packet                                          │
+│             │                                                      │
+│             ▼                                                      │
+│  Identify session                                                  │
+│             │                                                      │
+│             ▼                                                      │
+│  Double Ratchet state                                              │
+│             │                                                      │
+│             ▼                                                      │
+│  Derive Message Key                                                │
+│             │                                                      │
+│             ▼                                                      │
+│  AEAD Decryption + Authentication                                  │
+│             │                                                      │
+│             ▼                                                      │
+│       Original Plaintext                                           │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 2. Cryptographic Building Blocks
+
+The complete system contains multiple cryptographic primitives.
+
+```text
+                    E2EE CRYPTOGRAPHY
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+   Authentication      Key Agreement      Encryption
+        │                  │                  │
+        ▼                  ▼                  ▼
+     Ed25519             X25519              AEAD
+        │                  │                  │
+        │                  ▼                  │
+        │                 ECDH                │
+        │                  │                  │
+        │                  ▼                  │
+        │                HKDF                 │
+        │                  │                  │
+        │                  ▼                  │
+        │             Key Derivation          │
+        │                                     │
+        └─────────────────────────────────────┘
+                           │
+                           ▼
+                    Double Ratchet
+                           │
+                           ▼
+                 Forward Secrecy
+              Post-Compromise Recovery
+```
+
+---
+
+# 3. Algorithms Used
+
+| Component           | Algorithm / Concept             | Purpose                            |
+| ------------------- | ------------------------------- | ---------------------------------- |
+| Identity signatures | Ed25519                         | Authenticate key material          |
+| Key agreement       | X25519                          | Diffie-Hellman shared secrets      |
+| KDF                 | HKDF-SHA-256                    | Derive independent keys            |
+| Message encryption  | AEAD                            | Confidentiality + integrity        |
+| Example AEAD        | AES-256-GCM / ChaCha20-Poly1305 | Encrypt messages                   |
+| Ratchet             | Double Ratchet                  | Continuously change keys           |
+| Hash                | SHA-256                         | Cryptographic hashing              |
+| Randomness          | CSPRNG                          | Generate unpredictable keys/nonces |
+
+---
+
+# 4. Key Types
+
+An E2EE device does **not** use a single key.
+
+There are multiple key classes.
+
+```text
+DEVICE
+ │
+ ├── Identity Key Pair
+ │      ├── Private
+ │      └── Public
+ │
+ ├── Signed Pre-Key Pair
+ │      ├── Private
+ │      └── Public
+ │
+ ├── One-Time Pre-Key Pairs
+ │      ├── OPK1
+ │      ├── OPK2
+ │      ├── OPK3
+ │      └── ...
+ │
+ ├── Ephemeral Key Pair
+ │      ├── Private
+ │      └── Public
+ │
+ └── Session State
+        │
+        ├── Root Key
+        ├── Sending Chain Key
+        ├── Receiving Chain Key
+        └── Message Keys
+```
+
+---
+
+# 5. Identity Key
+
+The identity key represents the device cryptographically.
+
+For example:
+
+```text
+Alice:
+
+IK_A_private
+IK_A_public
+```
+
+Bob:
+
+```text
+IK_B_private
+IK_B_public
+```
+
+The private key stays on the device.
+
+```text
+             ALICE DEVICE
+
+      IK_A_private 🔐
+             │
+             │ NEVER SENT
+             │
+             X
+             │
+             ▼
+          SERVER
+```
+
+The public key can be published:
+
+```text
+IK_A_public
+```
+
+---
+
+# 6. Ed25519 — Identity Authentication
+
+Ed25519 is used for digital signatures.
+
+Suppose Bob has:
+
+```text
+IK_B_private
+IK_B_public
+```
+
+Bob creates a signed pre-key:
+
+```text
+SPK_B_public
+```
+
+Bob signs it:
+
+```text
+signature_B =
+Ed25519_Sign(
+    IK_B_private,
+    SPK_B_public
+)
+```
+
+The server stores:
+
+```text
+IK_B_public
+SPK_B_public
+signature_B
+```
+
+Alice verifies:
+
+```text
+Ed25519_Verify(
+    IK_B_public,
+    signature_B,
+    SPK_B_public
+)
+```
+
+If verification succeeds:
+
+```text
+             Signature
+                 │
+                 ▼
+        ┌─────────────────┐
+        │ Is key authentic│
+        │       ?         │
+        └────────┬────────┘
+                 │
+          ┌──────┴──────┐
+          │             │
+         YES            NO
+          │             │
+          ▼             ▼
+      Continue       Reject
+```
+
+---
+
+# 7. Why Signatures Are Needed
+
+Suppose the server sends Alice:
+
+```text
+Bob's Public Key
+```
+
+How does Alice know that the key really belongs to Bob?
+
+Without authentication:
+
+```text
+Alice
+  │
+  │ Bob's public key?
+  ▼
+Server
+  │
+  │ Attacker's public key ❌
+  ▼
+Alice
+```
+
+A digital signature binds the signed pre-key to Bob's identity key.
+
+---
+
+# 8. Signed Pre-Key
+
+Bob generates another X25519 key pair:
+
+```text
+SPK_B_private
+SPK_B_public
+```
+
+Bob signs the public portion:
+
+```text
+Sig_B =
+Sign(
+    IK_B_private,
+    SPK_B_public
+)
+```
+
+Bob publishes:
+
+```text
+{
+    IK_B_public,
+    SPK_B_public,
+    Sig_B
+}
+```
+
+---
+
+# 9. One-Time Pre-Key
+
+Bob can also generate many one-time keys:
+
+```text
+OPK1
+OPK2
+OPK3
+OPK4
+...
+OPKn
+```
+
+Each has:
+
+```text
+OPK_private
+OPK_public
+```
+
+The server stores the public versions.
+
+When Alice starts a session, one available OPK can be consumed.
+
+```text
+Server:
+
+OPK1  → available
+OPK2  → available
+OPK3  → available
+OPK4  → available
+
+Alice requests bundle
+
+OPK1 → assigned
+
+Server:
+
+OPK2
+OPK3
+OPK4
+```
+
+This provides additional asynchronous key material.
+
+---
+
+# 10. Why Pre-Keys Exist
+
+Pre-keys solve an important problem:
+
+> What if Bob is offline?
+
+Alice can still establish session material using Bob's previously uploaded public keys.
+
+```text
+Alice                           Bob
+  │                               │
+  │                               │
+  │                         📱 OFFLINE
+  │                               │
+  ▼
+Server
+  │
+  │ Bob's public key bundle
+  ▼
+Alice
+```
+
+Alice does not need Bob to be online at that exact moment.
+
+---
+
+# 11. X25519
+
+X25519 is an elliptic-curve Diffie-Hellman function.
+
+Its purpose:
+
+```text
+Alice Private + Bob Public
+             ↓
+        Shared Secret
+```
+
+Bob independently calculates:
+
+```text
+Bob Private + Alice Public
+             ↓
+        Same Shared Secret
+```
+
+Conceptually:
+
+```text
+Alice:
+
+X25519(
+    Alice_private,
+    Bob_public
+)
+        │
+        ▼
+     DH_SECRET
+
+
+Bob:
+
+X25519(
+    Bob_private,
+    Alice_public
+)
+        │
+        ▼
+     DH_SECRET
+```
+
+Both obtain the same secret.
+
+---
+
+# 12. X25519 Mathematical Idea
+
+X25519 operates on Curve25519.
+
+Conceptually:
+
+```text
+PublicKey = ScalarMult(
+                PrivateKey,
+                BasePoint
+            )
+```
+
+Therefore:
+
+```text
+A = aG
+
+B = bG
+```
+
+where:
+
+```text
+a = Alice private scalar
+b = Bob private scalar
+G = curve base point
+```
+
+Alice computes:
+
+```text
+aB
+```
+
+Since:
+
+```text
+B = bG
+```
+
+Alice gets:
+
+```text
+a(bG)
+= abG
+```
+
+Bob computes:
+
+```text
+bA
+```
+
+Since:
+
+```text
+A = aG
+```
+
+Bob gets:
+
+```text
+b(aG)
+= abG
+```
+
+Therefore:
+
+```text
+Alice Shared Secret = abG
+
+Bob Shared Secret   = abG
+```
+
+---
+
+# 13. X3DH-Style Session Establishment
+
+A richer E2EE session setup uses multiple DH calculations.
+
+Let:
+
+```text
+Alice Identity Key      = IK_A
+Alice Ephemeral Key     = EK_A
+
+Bob Identity Key        = IK_B
+Bob Signed Pre-Key      = SPK_B
+Bob One-Time Pre-Key    = OPK_B
+```
+
+The protocol can derive several DH values.
+
+Conceptually:
+
+```text
+DH1 = X25519(IK_A_private, SPK_B_public)
+
+DH2 = X25519(EK_A_private, IK_B_public)
+
+DH3 = X25519(EK_A_private, SPK_B_public)
+
+DH4 = X25519(EK_A_private, OPK_B_public)
+```
+
+The exact protocol specification determines the ordering, encoding, domain separation, and whether an OPK is present.
+
+Then:
+
+```text
+SK = HKDF(
+        DH1 || DH2 || DH3 || DH4
+     )
+```
+
+This produces initial session material.
+
+---
+
+# 14. Why Multiple DH Operations?
+
+Using multiple authenticated DH relationships provides stronger binding between:
+
+```text
+Alice's identity
+        +
+Alice's ephemeral key
+        +
+Bob's identity
+        +
+Bob's signed pre-key
+        +
+Bob's one-time pre-key
+```
+
+Conceptually:
+
+```text
+       Alice                       Bob
+
+     IK_A  ──────────────────────  IK_B
+       │                             │
+       │                             │
+     EK_A  ────────────────────── SPK_B
+       │                             │
+       │                             │
+       └────────────────────────── OPK_B
+
+                 │
+                 ▼
+             DH values
+                 │
+                 ▼
+            HKDF / KDF
+                 │
+                 ▼
+          Initial Session Key
+```
+
+---
+
+# 15. Complete Initial Handshake
+
+```text
+ALICE                                         BOB
+  │                                             │
+  │                         Identity Key        │
+  │                         Signed Pre-Key      │
+  │                         One-Time Pre-Key    │
+  │                             │               │
+  │◄────────────────────────────┘               │
+  │                                             │
+  │ Generate Ephemeral Key                      │
+  │                                             │
+  │ EK_A                                        │
+  │                                             │
+  │ DH1 = X25519(IK_A, SPK_B)                   │
+  │ DH2 = X25519(EK_A, IK_B)                    │
+  │ DH3 = X25519(EK_A, SPK_B)                   │
+  │ DH4 = X25519(EK_A, OPK_B)                   │
+  │                                             │
+  │            DH1 || DH2 || DH3 || DH4         │
+  │                       │                     │
+  │                       ▼                     │
+  │                      HKDF                   │
+  │                       │                     │
+  │                       ▼                     │
+  │                  Initial Key Material       │
+  │                                             │
+  │────────────────────────────────────────────►│
+  │                                             │
+  │                  Session Established        │
+```
+
+---
+
+# 16. HKDF
+
+HKDF means:
+
+> HMAC-based Key Derivation Function
+
+It is normally described as two stages:
+
+```text
+          Input Key Material
+                  │
+                  ▼
+              HKDF-Extract
+                  │
+                  ▼
+                  PRK
+                  │
+                  ▼
+              HKDF-Expand
+                  │
+                  ▼
+          Derived Key Material
+```
+
+---
+
+# 17. HKDF-Extract
+
+Conceptually:
+
+```text
+PRK = HMAC(
+        salt,
+        IKM
+      )
+```
+
+where:
+
+```text
+IKM = Input Key Material
+PRK = Pseudorandom Key
+```
+
+For the initial handshake:
+
+```text
+IKM =
+DH1 || DH2 || DH3 || DH4
+```
+
+---
+
+# 18. HKDF-Expand
+
+Conceptually:
+
+```text
+OKM =
+HKDF-Expand(
+    PRK,
+    info,
+    desired_length
+)
+```
+
+The `info` parameter can provide protocol/context separation.
+
+For example:
+
+```text
+info = "E2EE session v1"
+```
+
+Then:
+
+```text
+PRK
+ │
+ ├──► Root Key
+ │
+ ├──► Initial Sending Chain Key
+ │
+ └──► Initial Receiving Chain Key
+```
+
+---
+
+# 19. Why HKDF?
+
+Do not directly use:
+
+```text
+DH_SECRET
+```
+
+for everything.
+
+Instead:
+
+```text
+DH_SECRET
+     │
+     ▼
+    HKDF
+     │
+     ├──── Root Key
+     │
+     ├──── Chain Key
+     │
+     ├──── Encryption Key
+     │
+     └──── Other protocol material
+```
+
+This creates independent cryptographic keys for different purposes.
+
+---
+
+# 20. Session State
+
+After initialization, Alice and Bob maintain local session state.
+
+Example:
+
+```text
+Session State
+│
+├── Root Key (RK)
+│
+├── Sending Chain Key (CKs)
+│
+├── Receiving Chain Key (CKr)
+│
+├── DH Ratchet Private Key
+│
+├── DH Ratchet Public Key
+│
+├── Previous Chain Length
+│
+└── Message Counters
+```
+
+This state is stored locally.
+
+---
+
+# 21. Double Ratchet
+
+The Double Ratchet combines two types of ratchets:
+
+```text
+             DOUBLE RATCHET
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+          ▼                   ▼
+    Symmetric Ratchet     DH Ratchet
+          │                   │
+          ▼                   ▼
+    Chain Key Updates    New DH Secret
+          │                   │
+          └─────────┬─────────┘
+                    ▼
+                Root Key
+```
+
+---
+
+# 22. Symmetric-Key Ratchet
+
+Suppose Alice has:
+
+```text
+Chain Key = CK0
+```
+
+She derives:
+
+```text
+Message Key 1 = KDF(CK0)
+Chain Key 1  = KDF(CK0)
+```
+
+Then:
+
+```text
+CK0
+ │
+ ├────► Message Key 1
+ │
+ └────► CK1
+
+CK1
+ │
+ ├────► Message Key 2
+ │
+ └────► CK2
+
+CK2
+ │
+ ├────► Message Key 3
+ │
+ └────► CK3
+```
+
+Therefore:
+
+```text
+Message 1 → MK1
+Message 2 → MK2
+Message 3 → MK3
+```
+
+---
+
+# 23. Chain Key Derivation
+
+Conceptually:
+
+```text
+MK_i = HMAC(
+          CK_i,
+          "message"
+       )
+
+CK_(i+1) = HMAC(
+              CK_i,
+              "chain"
+           )
+```
+
+The actual protocol uses 
